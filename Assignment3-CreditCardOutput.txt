@@ -1,0 +1,72 @@
+1. Applicant Details Fields
+
+| Field                  | Description                      | Example Values                                              |
+| ---------------------- | -------------------------------- | ----------------------------------------------------------- |
+| First Name             | Applicant's first name           | Rahul, Priya                                                |
+| Last Name              | Applicant's last name            | Sharma, Verma                                               |
+| Date of Birth          | Applicant's DOB                  | 1985-06-15, 1995-12-20                                      |
+| PAN                    | Permanent Account Number         | ABCDE1234F                                                  |
+| Aadhaar                | Aadhaar Number                   | 1234 5678 9012                                              |
+| Mobile Number          | Applicant’s mobile               | 9876543210                                                  |
+| Email                  | Applicant’s email                | [rahul.sharma@example.com](mailto:rahul.sharma@example.com) |
+| Employment Type        | Salaried, Self-Employed, Student | Salaried, Self-Employed                                     |
+| Annual Income          | Applicant's income in INR        | 500000, 1200000                                             |
+| Residential Status     | Resident, NRI                    | Resident, NRI                                               |
+| Existing HDFC Accounts | Yes/No                           | Yes, No                                                     |
+
+2. Credit Card Types
+
+| Card Type        | Target Customer              | Credit Limit Range     | Key Features                     |
+| ---------------- | ---------------------------- | ---------------------- | -------------------------------- |
+| HDFC Regalia     | Premium customers            | ₹3,00,000 – ₹5,00,000  | Travel benefits, lounge access   |
+| HDFC Diners Club | High spenders                | ₹5,00,000 – ₹10,00,000 | Dining, international benefits   |
+| HDFC MoneyBack   | Salaried/Young professionals | ₹50,000 – ₹2,50,000    | Cashback on retail spends        |
+| HDFC Platinum    | Standard customers           | ₹1,00,000 – ₹3,00,000  | Basic rewards, shopping benefits |
+| HDFC Freedom     | First-time cardholders       | ₹25,000 – ₹1,00,000    | Cashback on EMI, grocery         |
+
+
+3. Conditions and Eligibility
+
+| Condition            | Description                             | Example                                                      |
+| -------------------- | --------------------------------------- | ------------------------------------------------------------ |
+| Minimum Age          | Must be ≥ 18 years                      | DOB: 2005-01-01 → Not eligible                               |
+| Maximum Age          | Typically ≤ 70 years                    | DOB: 1945-01-01 → Not eligible                               |
+| Minimum Income       | Varies by card                          | Regalia: ≥ 12L PA, MoneyBack: ≥ 3L PA                        |
+| Existing Credit Card | Some cards require no existing defaults | Applicant has overdue → Reject                               |
+| Employment           | Certain cards for salaried only         | Diners Club → Self-Employed with 5L PA → Check documentation |
+
+
+4. Test Data Examples
+Scenario 1: Valid Application – Regalia Card
+
+{
+  "firstName": "Rahul",
+  "lastName": "Sharma",
+  "dob": "1985-06-15",
+  "pan": "ABCDE1234F",
+  "aadhaar": "123456789012",
+  "mobile": "9876543210",
+  "email": "rahul.sharma@example.com",
+  "employmentType": "Salaried",
+  "annualIncome": 1500000,
+  "residentialStatus": "Resident",
+  "existingHDFCAccounts": "Yes",
+  "cardType": "HDFC Regalia"
+}
+
+
+.....
+
+5. Notes / Best Practices
+
+Always include PAN & Aadhaar for KYC verification.
+
+Verify minimum age and income for each card type.
+
+Include both valid and invalid scenarios for automation and manual testing.
+
+Ensure mobile number, email are unique per applicant for testing.
+
+Include employment type checks (some cards restricted to salaried).
+
+Check for existing HDFC account conditions and credit history.

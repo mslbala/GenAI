@@ -1,0 +1,32 @@
+{
+    "id": "chatcmpl-63f13cbd-d53d-4b2b-94e7-7c62bd0e0f7b",
+    "object": "chat.completion",
+    "created": 1757734503,
+    "model": "llama-3.3-70b-versatile",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "```typescript\n// pages/login.page.ts\nimport { Page } from 'playwright';\n\nexport class LoginPage {\n  private page: Page;\n\n  constructor(page: Page) {\n    this.page = page;\n  }\n\n  async enterUsername(username: string) {\n    // Using page.locator for selectors and auto-waiting\n    await this.page.locator('#username').fill(username);\n    return this;\n  }\n\n  async enterPassword(password: string) {\n    await this.page.locator('#password').fill(password);\n    return this;\n  }\n\n  async clickLoginButton() {\n    // Using async/await for promises\n    await this.page.locator('.decorativeSubmit').click();\n    // Element-based assertion to validate page state\n    await this.page.waitForSelector('#crmsfa');\n    return new HomePage(this.page);\n  }\n}\n\n// pages/home.page.ts\nimport { Page } from 'playwright';\n\nexport class HomePage {\n  private page: Page;\n\n  constructor(page: Page) {\n    this.page = page;\n  }\n\n  async clickLogoutButton() {\n    await this.page.locator('.decorativeSubmit').click();\n    return new LoginPage(this.page);\n  }\n\n  async clickCrmsfaLink() {\n    await this.page.locator('text=\"CRM/SFA\"').click();\n    return new MyHomePage(this.page);\n  }\n\n  async verifyHomePage() {\n    // Element-based assertion to validate page state\n    await this.page.waitForSelector('text=\"CRM/SFA\"');\n    return this;\n  }\n}\n\n// pages/myhome.page.ts\nimport { Page } from 'playwright';\n\nexport class MyHomePage {\n  private page: Page;\n\n  constructor(page: Page) {\n    this.page = page;\n  }\n}\n\n// tests/login.test.ts\nimport { test, expect } from '@playwright/test';\nimport { LoginPage } from '../pages/login.page';\nimport { HomePage } from '../pages/home.page';\n\ntest('login test', async ({ page }) => {\n  const loginPage = new LoginPage(page);\n  await loginPage.enterUsername('username');\n  await loginPage.enterPassword('password');\n  const homePage = await loginPage.clickLoginButton();\n  await homePage.verifyHomePage();\n  await homePage.clickLogoutButton();\n});\n```"
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "queue_time": 0.045665359,
+        "prompt_tokens": 741,
+        "prompt_time": 0.06281615,
+        "completion_tokens": 461,
+        "completion_time": 0.87788984,
+        "total_tokens": 1202,
+        "total_time": 0.94070599
+    },
+    "usage_breakdown": null,
+    "system_fingerprint": "fp_2ddfbb0da0",
+    "x_groq": {
+        "id": "req_01k50j7zyje2htmjvtmg8vv3pj"
+    },
+    "service_tier": "on_demand"
+}

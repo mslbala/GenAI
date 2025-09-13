@@ -1,0 +1,123 @@
+your-project/
+│
+├── playwright.config.ts
+├── package.json
+├── tsconfig.json
+│
+├── pages/                        # Page Object Models
+│   ├── loginPage.ts
+│   └── homePage.ts
+│
+└── tests/
+    └── login.test.ts             # Example test using the POM
+
+
+    import { Page, expect } from '@playwright/test';
+import { HomePage } from './homePage';
+
+export class LoginPage {
+  readonly page: Page;
+  readonly usernameField;
+  readonly passwordField;
+  readonly loginButton;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.usernameField = page.locator('#username'); // ✅ Use page.locator() for better auto-wait
+    this.passwordField = page.locator('#password');
+    this.loginButton = page.locator('.decorativeSubmit');
+  }
+
+  /**
+   * Fills in the username field
+   * Best practice: Always await locator actions (Playwright auto-waits for visibility & readiness)
+   */
+  async enterUsername(username: string): Promise<this> {
+    await this.usernameField.fill(username);
+    return this;
+  }
+
+  /**
+   * Fills in the password field
+   */
+  async enterPassword(password: string): Promise<this> {
+    await this.passwordField.fill(password);
+    return this;
+  }
+
+  /**
+   * Clicks the login button and verifies that CRM/SFA link is visible
+   * Best practice: Prefer element-based assertions over URL assertions
+   */
+  async clickLoginButton(): Promise<HomePage> {
+    await this.loginButton.click();
+
+    // ✅ Wait for a post-login element to be visible (proves login success)
+    const homePage = new HomePage(this.page);
+    await expect(homePage.crmSfaLink).toBeVisible();
+
+    return homePage;
+  }
+}
+import { Page, expect } from '@playwright/test';
+import { LoginPage } from './loginPage';
+
+export class HomePage {
+  readonly page: Page;
+  readonly crmSfaLink;
+  readonly logoutButton;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.crmSfaLink = page.locator('text=CRM/SFA'); // ✅ Playwright's text selector
+    this.logoutButton = page.locator('.decorativeSubmit');
+  }
+
+  /**
+   * Verifies that Home Page is loaded by checking CRM/SFA link
+   */
+  async verifyHomePage(): Promise<this> {
+    await expect(this.crmSfaLink).toBeVisible();
+    console.log('✅ Home Page is loaded');
+    return this;
+  }
+
+  /**
+   * Clicks CRM/SFA link and waits until next page is loaded
+   */
+  async clickCrmsfaLink(): Promise<this> {
+    await this.crmSfaLink.click();
+    // ✅ Add an assertion for next page (replace with a known element in MyHomePage)
+    await expect(this.page).toHaveURL(/crmsfa\/control\/main/);
+    return this;
+  }
+
+  /**
+   * Clicks Logout button
+   */
+  async clickLogoutButton(): Promise<LoginPage> {
+    await this.logoutButton.click();
+    return new LoginPage(this.page);
+  }
+}
+import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/loginPage';
+
+test.describe('Login Tests', () => {
+  test('Successful Login', async ({ page }) => {
+    // ✅ Navigate directly using baseURL or full URL
+    await page.goto('http://leaftaps.com/opentaps/control/main');
+
+    const loginPage = new LoginPage(page);
+    const homePage = await loginPage
+      .enterUsername('demosalesmanager')
+      .then(() => loginPage.enterPassword('crmsfa'))
+      .then(() => loginPage.clickLoginButton());
+
+    // ✅ Verify that CRM/SFA link is still visible
+    await homePage.verifyHomePage();
+
+    // Optional: Check text for extra confidence
+    await expect(homePage.crmSfaLink).toHaveText('CRM/SFA');
+  });
+});
